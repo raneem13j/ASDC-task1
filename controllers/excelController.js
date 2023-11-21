@@ -34,3 +34,38 @@ export const uploadExcel = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
+export const deleteItem = async (req, res) => {
+    try {
+      const id = req.params.id;
+      await Excel.deleteOne({ _id: id });
+      res.status(200).json({ message: "Document deleted successfully." });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error });
+    }
+  };
+
+
+  export const editItem = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const updateFields = {};
+        
+        if (req.body.name) updateFields.name = req.body.name;
+        if (req.body.action) updateFields.action = req.body.action;
+        if (req.body.responsibilities) updateFields.responsibilities = req.body.responsibilities;
+        if (req.body.dueToData) updateFields.dueToData = req.body.dueToData;
+      
+        const item = await Excel.findByIdAndUpdate(id, {
+          $set: updateFields,
+        }, { new: true });
+    
+        if (!item) return res.status(404).send("Document not found");
+        res.status(200).json("Document updated successfully.");
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Error updating document in the database");
+      }
+  }  

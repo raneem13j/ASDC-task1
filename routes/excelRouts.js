@@ -6,12 +6,17 @@ const router = express.Router();
 import {
 
     getAllExcel,
+    deleteItem,
+    editItem,
     uploadExcel
 
 } from "../controllers/excelController.js";
 
 
+
 router.get('/', getAllExcel);
+router.delete('/:id', deleteItem);
+router.put('/:id', editItem);
 router.post('/',upload.single("excel"),uploadExcel);
 
 
