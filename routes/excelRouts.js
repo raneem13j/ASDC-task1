@@ -6,6 +6,7 @@ const router = express.Router();
 import {
 
     getAllExcel,
+    getRowsBySheetId,
     deleteItem,
     editItem,
     uploadExcel
@@ -15,6 +16,7 @@ import {
 
 
 router.get('/', getAllExcel);
+router.get('/:sheetId', getRowsBySheetId)
 router.delete('/:id', deleteItem);
 router.put('/:id', editItem);
 router.post('/',upload.single("excel"),uploadExcel);

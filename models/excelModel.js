@@ -3,6 +3,9 @@ const { Schema, model } = mongoose;
 
 const excelSchema = new Schema(
   {
+    sheetId: {
+      type: String,
+    },
     name: {
       type: String,
       required: true,

@@ -1,5 +1,11 @@
 import Excel from "../models/excelModel.js";
 import XLSX from "xlsx";
+import { v4 as uuidv4 } from 'uuid';
+
+const generateSheetId = () => {
+    return uuidv4();
+  };
+
 
 export const getAllExcel = async (req, res) => {
   try {
@@ -16,24 +22,45 @@ export const getAllExcel = async (req, res) => {
   }
 };
 
-
 export const uploadExcel = async (req, res) => {
-  try {
-    var workbook = XLSX.readFile(req.file.path);
-    var sheet_namelist = workbook.SheetNames;
-    var x = 0;
-    sheet_namelist.forEach(async (element) => {
-      var xlData = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_namelist[x]]);
-      await Excel.insertMany(xlData);
-      x++;
-    });
+    try {
+      const sheetId = generateSheetId();
+      var workbook = XLSX.readFile(req.file.path);
+      var sheet_namelist = workbook.SheetNames;
+      var x = 0;
+  
+      sheet_namelist.forEach(async (element) => {
+        var xlData = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_namelist[x]]);
+       
+        xlData = xlData.map((row) => ({ ...row, sheetId }));
+        await Excel.insertMany(xlData);
+        x++;
+      });
+  
+      res.status(200).json({ message: "Excel data inserted successfully" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
 
-    res.status(200).json({ message: "Excel data inserted successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
+
+  export const getRowsBySheetId = async (req, res) => {
+    try {
+      const sheetId = req.params.sheetId;
+      const rows = await Excel.find({ sheetId }).exec();
+  
+      if (rows && rows.length > 0) {
+        res.status(200).json({ data: rows });
+      } else {
+        res.status(404).json({ message: "No rows found for the specified sheet ID" });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
 
 
 export const deleteItem = async (req, res) => {
