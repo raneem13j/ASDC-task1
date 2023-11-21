@@ -10,24 +10,25 @@ const excelSchema = new Schema(
       type: String,
       required: true,
     },
-    action: {
-        type: String,
-        required: true,
-      },
-    responsibilities: {
-        type: String,
-        required: true,
-      },
-    dueToData: {
-        type: Date,
-        required: true,
-        default: new Date(),
-      },
-
+    description: {
+      type: String,
+      required: true,
+    },
+    location: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: String,
+      required: true,
+    },
+    color: {
+      type: String,
+      required: true,
+    },
   },
-  { timestamps: true },
-
-  );
+  { timestamps: true }
+);
 
 const Excel = model("Excel", excelSchema);
 export default Excel;
