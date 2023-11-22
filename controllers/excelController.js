@@ -6,6 +6,15 @@ const generateSheetId = () => {
     return uuidv4();
   };
 
+const columnMapping = {
+    "Name": "name",
+    "Description": "description",
+    "Location": "location",
+    "Price": "price",
+    "Color": "color",
+    
+  };  
+
 
 export const getAllExcel = async (req, res) => {
   try {
@@ -30,9 +39,17 @@ export const uploadExcel = async (req, res) => {
       var x = 0;
   
       sheet_namelist.forEach(async (element) => {
-        var xlData = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_namelist[x]]);
-       
-        xlData = xlData.map((row) => ({ ...row, sheetId }));
+        var xlData = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_namelist[x]], { header: 1 });
+  
+        xlData = xlData.slice(1).map((row) => {
+          const mappedRow = {};
+          row.forEach((value, index) => {
+            const columnHeader = xlData[0][index];
+            const fieldName = columnMapping[columnHeader] || columnHeader.toLowerCase();
+            mappedRow[fieldName] = value;
+          });
+          return { ...mappedRow, sheetId };
+        });
         await Excel.insertMany(xlData);
         x++;
       });
@@ -79,11 +96,12 @@ export const deleteItem = async (req, res) => {
     try {
         const id = req.params.id;
         const updateFields = {};
-        
+
         if (req.body.name) updateFields.name = req.body.name;
-        if (req.body.action) updateFields.action = req.body.action;
-        if (req.body.responsibilities) updateFields.responsibilities = req.body.responsibilities;
-        if (req.body.dueToData) updateFields.dueToData = req.body.dueToData;
+        if (req.body.description) updateFields.description = req.body.description;
+        if (req.body.location) updateFields.location = req.body.location;
+        if (req.body.price) updateFields.price = req.body.price;
+        if (req.body.color) updateFields.color = req.body.color;
       
         const item = await Excel.findByIdAndUpdate(id, {
           $set: updateFields,
