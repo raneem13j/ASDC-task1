@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Upload Excel File</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <div class="formbold-main-wrapper">
+      <!-- Author: FormBold Team -->
+      <!-- Learn More: https://formbold.com -->
+      <div class="formbold-form-wrapper">
+        <form id="uploadForm" enctype="multipart/form-data">
+
+          <div class="mb-6 pt-4">
+            <label class="formbold-form-label formbold-form-label-2" for="file" >
+              Upload File
+            </label>
+          </div>
+          <div class="formbold-mb-5 formbold-file-input">
+            <label for="file" class="formbold-drop-file">
+              <div>
+                <span class="formbold-drop-file"> Drop files here </span>
+                <span class="formbold-or"> Or </span>
+                <span class="formbold-browse"> Browse </span>
+              </div>
+            </label>
+            <input type="file" name="excel" id="file" style="display: none;" onchange="displayFileName()" />
+          </div>
+          <div>
+            <button id="btn" class="formbold-btn w-full" onclick="submitExcel()">Send File</button>
+          </div>
+          
+        </form>
+      </div>
+    </div>
+    <div id="root"></div>
+    <script src="scripts.js"></script>
+  </body>
+</html>
